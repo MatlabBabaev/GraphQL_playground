@@ -1,0 +1,37 @@
+#scalar Long
+#scalar Short
+#scalar Byte
+#scalar BigDecimal
+#scalar Date
+#scalar DateTime
+#scalar LocalTime
+#scalar Object
+#
+#type Query{
+#    get: allTypes
+#    products: [Product]
+#}
+#
+#type allTypes {
+#    id: ID,
+#    height: Int,
+#    temp: Float,
+#    city: String,
+#    isValid: Boolean,
+#    distance: Long,
+#    ageInYears: Byte,
+#    ageMonth: Short,
+#    bigDecimal: BigDecimal,
+#    dateTime: DateTime,
+#    localTime: LocalTime
+#    car: Car
+#}
+#enum Car{
+#    BMW
+#    MERCEDES
+#}
+#
+#type Product{
+#    name: String
+#    attributes: Object
+#}
