@@ -3,9 +3,12 @@ package com.graphql.praphqlplay.lec15.service;
 import com.graphql.praphqlplay.lec15.dto.CustomerDto;
 import com.graphql.praphqlplay.lec15.dto.DeleteResponseDto;
 import com.graphql.praphqlplay.lec15.dto.Status;
+import com.graphql.praphqlplay.lec15.exceptions.ApplicationErrors;
+import com.graphql.praphqlplay.lec15.exceptions.ApplicationException;
 import com.graphql.praphqlplay.lec15.repository.CustomerRepository;
 import com.graphql.praphqlplay.lec15.util.EntityDtoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.execution.ErrorType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,7 +29,7 @@ public class CustomerService {
                 .map(EntityDtoUtil::toDto);
     }
     public Mono<CustomerDto> createCustomer(CustomerDto dto){
-        return Mono.just(dto)
+        return   Mono.just(dto)
                 .map(EntityDtoUtil::toEntity)
                 .flatMap(this.repository::save)
                 .map(EntityDtoUtil::toDto);

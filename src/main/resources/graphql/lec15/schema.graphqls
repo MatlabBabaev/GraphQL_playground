@@ -1,6 +1,7 @@
 type Query{
     customers: [Customer]!
-    customerById(id: ID!): Customer
+    """Here return is union type: which is whether returns Customer if found, otherwise CustomerNotFound"""
+    customerById(id: ID!): CustomerResponse!
 }
 
 type Mutation{
@@ -29,4 +30,12 @@ type DeleteResponse{
 enum Status{
     SUCCESS
     FAILURE
+}
+
+"""returns Customer or CustomerNotFound"""
+union CustomerResponse = Customer | CustomerNotFound
+
+type CustomerNotFound{
+    id: ID!
+    message: String
 }

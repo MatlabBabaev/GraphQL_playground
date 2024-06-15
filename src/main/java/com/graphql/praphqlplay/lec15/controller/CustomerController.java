@@ -1,7 +1,9 @@
 package com.graphql.praphqlplay.lec15.controller;
 
 import com.graphql.praphqlplay.lec15.dto.CustomerDto;
+import com.graphql.praphqlplay.lec15.dto.CustomerNotFound;
 import com.graphql.praphqlplay.lec15.dto.DeleteResponseDto;
+import com.graphql.praphqlplay.lec15.exceptions.ApplicationErrors;
 import com.graphql.praphqlplay.lec15.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -22,15 +24,27 @@ public class CustomerController {
         return this.service.allCustomers();
     }
 
+//    @QueryMapping
+//    public Mono<CustomerDto> customerById(@Argument Integer id){
+//        return this.service.findById(id)
+//                .switchIfEmpty(Mono.just(CustomerResponse.create(id)))
+////                .switchIfEmpty(ApplicationErrors.noSuchUser(id));
+//    }
     @QueryMapping
-    public Mono<CustomerDto> customerById(@Argument Integer id){
-        throw new RuntimeException("Some wierd issue");
-//        return this.service.findById(id);
+    public Mono<Object> customerById(@Argument Integer id){
+        return this.service.findById(id)
+                .cast(Object.class)
+                .switchIfEmpty(Mono.just(CustomerNotFound.create(id)));
     }
+
 
     @MutationMapping
     public Mono<CustomerDto> createCustomer(@Argument CustomerDto customer){
-        return this.service.createCustomer(customer);
+        return
+                Mono.just(customer)
+                        .filter(c -> c.getAge()>=18)
+                        .flatMap(this.service::createCustomer)
+                        .switchIfEmpty(ApplicationErrors.ageNotAllowed(customer));
     }
 
     @MutationMapping
