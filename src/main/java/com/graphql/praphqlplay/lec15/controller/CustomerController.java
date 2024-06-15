@@ -5,6 +5,8 @@ import com.graphql.praphqlplay.lec15.dto.CustomerNotFound;
 import com.graphql.praphqlplay.lec15.dto.DeleteResponseDto;
 import com.graphql.praphqlplay.lec15.exceptions.ApplicationErrors;
 import com.graphql.praphqlplay.lec15.service.CustomerService;
+import graphql.schema.DataFetchingEnvironment;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -14,13 +16,16 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Controller
+@Slf4j
 public class CustomerController {
 
     @Autowired
     private CustomerService service;
 
     @QueryMapping
-    public Flux<CustomerDto> customers(){
+    public Flux<CustomerDto> customers(DataFetchingEnvironment environment){
+        var callerId = environment.getGraphQlContext().get("caller-Id");
+        log.info("callerId: {}", callerId);
         return this.service.allCustomers();
     }
 
