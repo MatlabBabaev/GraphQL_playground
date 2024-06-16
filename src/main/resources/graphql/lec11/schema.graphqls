@@ -1,26 +1,26 @@
-type Query{
-    search: [Result]
-}
-#Here the result could be one of these types
-union Result = Fruit | Electronics | Book
-
-type Fruit {
-    description: String
-    expiryDate: String
-}
-
-type Electronics {
-    id: ID!
-    description: String
-    price: Int
-    brand: Brand
-}
-
-enum Brand{
-    APPLE, SAMSUNG
-}
-
-type Book {
-    title: String
-    author: String
-}
+#type Query{
+#    search: [Result]
+#}
+##Here the result could be one of these types
+#union Result = Fruit | Electronics | Book
+#
+#type Fruit {
+#    description: String
+#    expiryDate: String
+#}
+#
+#type Electronics {
+#    id: ID!
+#    description: String
+#    price: Int
+#    brand: Brand
+#}
+#
+#enum Brand{
+#    APPLE, SAMSUNG
+#}
+#
+#type Book {
+#    title: String
+#    author: String
+#}
