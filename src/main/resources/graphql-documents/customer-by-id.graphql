@@ -1,0 +1,22 @@
+#Assignment
+#query GetCustomerById($id: ID!){
+#    a: customerById(id: $id){
+#        ... customerDetails
+#    }
+#    b: customerById(id: 2){
+#        ... customerDetails
+#    }
+#}
+
+query GetCustomerById($id: ID!){
+    customerById(id: $id){
+        ... customerDetails
+    }
+}
+
+fragment customerDetails on Customer{
+    id
+    name
+    age
+    city
+}

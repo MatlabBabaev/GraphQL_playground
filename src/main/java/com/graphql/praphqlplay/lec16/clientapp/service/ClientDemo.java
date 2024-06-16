@@ -18,7 +18,9 @@ public class ClientDemo implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        rawQueryDemo().subscribe();
+        rawQueryDemo()
+                .then(this.getCustomerById())
+                .subscribe();
     }
 
     private Mono<Void> rawQueryDemo(){
@@ -47,10 +49,33 @@ public class ClientDemo implements CommandLineRunner {
                 //And converting it to CustomerDto class
                 .map(cr -> cr.field("a").toEntityList(CustomerDto.class));
 
+        return executor("RAW QUERY DEMO", mono);
+
         //We are calling the query to get all the customers: and waiting 1 second
+//        return Mono.delay(Duration.ofSeconds(1))
+//                .doFirst(()-> System.out.println("RAW QUERY DEMO"))
+//                .then(mono)
+//                .doOnNext(System.out::println)
+//                .then();
+    }
+
+    //Here we are doing the similar the above, but we have already created document in the resources file
+    //So we are calling already ready query
+    private Mono<Void> getCustomerById(){
+
+        return this.executor("---GetCustomer by ID: ---", this.client.getCustomerById(5));
+
+//        return Mono.delay(Duration.ofSeconds(1))
+//                .doFirst(()-> System.out.println("---GetCustomer by ID: ---"))
+//                .then(this.client.getCustomerById(1))
+//                .doOnNext(System.out::println)
+//                .then();
+    }
+
+    private <T> Mono<Void> executor(String message, Mono<T> publisher){
         return Mono.delay(Duration.ofSeconds(1))
-                .doFirst(()-> System.out.println("RAW QUERY DEMO"))
-                .then(mono)
+                .doFirst(()-> System.out.println(message))
+                .then(publisher)
                 .doOnNext(System.out::println)
                 .then();
     }
