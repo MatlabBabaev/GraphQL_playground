@@ -1,6 +1,6 @@
 type Query{
     customers: [Customer]!
-    customerById(id: ID!): Customer
+    customerById(id: ID!): CustomerResponse!
 }
 
 type Mutation{
@@ -30,4 +30,10 @@ enum Status{
     SUCCESS
     FAILURE
 }
+type CustomerNotFound{
+    id: ID!
+    message: String
+}
+"""returns Customer or CustomerNotFound"""
+union CustomerResponse = Customer | CustomerNotFound
 

@@ -1,6 +1,8 @@
 package com.graphql.praphqlplay.lec16.serverapp.controller;
 
 import com.graphql.praphqlplay.lec16.dto.CustomerDto;
+import com.graphql.praphqlplay.lec16.dto.CustomerNotFound;
+import com.graphql.praphqlplay.lec16.dto.CustomerResponse;
 import com.graphql.praphqlplay.lec16.dto.DeleteResponseDto;
 import com.graphql.praphqlplay.lec16.serverapp.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +25,10 @@ public class CustomerController {
     }
 
     @QueryMapping
-    public Mono<CustomerDto> customerById(@Argument Integer id){
+    public Mono<Object> customerById(@Argument Integer id){
         return this.service.findById(id)
-                .switchIfEmpty(Mono.error(new RuntimeException("Customer not found")));
+                .cast(Object.class)
+                .defaultIfEmpty(CustomerNotFound.create(id));
     }
 
     @MutationMapping

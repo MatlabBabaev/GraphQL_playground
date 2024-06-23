@@ -1,6 +1,8 @@
 package com.graphql.praphqlplay.lec16.clientapp.client;
 
 import com.graphql.praphqlplay.lec16.dto.CustomerDto;
+import com.graphql.praphqlplay.lec16.dto.CustomerNotFound;
+import com.graphql.praphqlplay.lec16.dto.CustomerResponse;
 import com.graphql.praphqlplay.lec16.dto.GenericResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.graphql.client.ClientGraphQlResponse;
@@ -33,6 +35,22 @@ public class CustomerClient {
                  var field = cr.field("customerById");
                  return field.hasValue() ? new GenericResponse<>(field.toEntity(CustomerDto.class)) :
                          new GenericResponse<>(field.getError());
+                });
+    }
+
+    public Mono<CustomerResponse> getCustomerByIdWithUnion(Integer id){
+
+        return this.client.documentName("customer-by-id")
+                .variable("id", id)
+                .execute()
+                .map(cr ->{
+
+                    var field = cr.field("customerById");
+
+                    //here we are checking what is the type
+                    var isCustomer = "Customer".equals(cr.field("customerById.type").getValue().toString());
+
+                    return isCustomer ? field.toEntity(CustomerDto.class) : field.toEntity(CustomerNotFound.class);
                 });
     }
 

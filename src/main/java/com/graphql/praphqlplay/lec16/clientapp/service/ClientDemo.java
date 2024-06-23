@@ -63,7 +63,7 @@ public class ClientDemo implements CommandLineRunner {
     //So we are calling already ready query
     private Mono<Void> getCustomerById(){
 
-        return this.executor("---GetCustomer by ID: ---", this.client.getCustomerById(5));
+        return this.executor("---GetCustomer by ID: ---", this.client.getCustomerByIdWithUnion(20));
 
 //        return Mono.delay(Duration.ofSeconds(1))
 //                .doFirst(()-> System.out.println("---GetCustomer by ID: ---"))
