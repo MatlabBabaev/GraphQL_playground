@@ -18,9 +18,11 @@ public class ClientDemo implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        rawQueryDemo()
-                .then(this.getCustomerById())
+        allCustomersDemo()
                 .subscribe();
+//        rawQueryDemo()
+//                .then(this.getCustomerById())
+//                .subscribe();
     }
 
     private Mono<Void> rawQueryDemo(){
@@ -78,5 +80,11 @@ public class ClientDemo implements CommandLineRunner {
                 .then(publisher)
                 .doOnNext(System.out::println)
                 .then();
+    }
+
+    private Mono<Void> allCustomersDemo(){
+
+        return this.executor("---all Customers demo: ---", this.client.allCustomers());
+
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.graphql.client.HttpGraphQlClient;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 public class CustomerClient {
 
@@ -28,29 +30,15 @@ public class CustomerClient {
 
     public Mono<GenericResponse<CustomerDto>> getCustomerById(Integer id){
 
-        return this.client.documentName("customer-by-id")
+        return this.client
+                .mutate().header("sdsd", "Sdsd").build()
+                .documentName("customer-by-id")
                 .variable("id", id)
                 .execute()
                 .map(cr ->{
                  var field = cr.field("customerById");
                  return field.hasValue() ? new GenericResponse<>(field.toEntity(CustomerDto.class)) :
                          new GenericResponse<>(field.getError());
-                });
-    }
-
-    public Mono<CustomerResponse> getCustomerByIdWithUnion(Integer id){
-
-        return this.client.documentName("customer-by-id")
-                .variable("id", id)
-                .execute()
-                .map(cr ->{
-
-                    var field = cr.field("customerById");
-
-                    //here we are checking what is the type
-                    var isCustomer = "Customer".equals(cr.field("customerById.type").getValue().toString());
-
-                    return isCustomer ? field.toEntity(CustomerDto.class) : field.toEntity(CustomerNotFound.class);
                 });
     }
 
@@ -83,4 +71,26 @@ public class CustomerClient {
 //                .execute()
 //                .map(cr -> cr.toEntity(MultiCustomerAssignment.class));
 //    }
+    public Mono<CustomerResponse> getCustomerByIdWithUnion(Integer id){
+
+        return this.client.documentName("customer-by-id")
+                .variable("id", id)
+                .execute()
+                .map(cr ->{
+
+                    var field = cr.field("customerById");
+
+                    //here we are checking what is the type
+                    var isCustomer = "Customer".equals(cr.field("customerById.type").getValue().toString());
+
+                    return isCustomer ? field.toEntity(CustomerDto.class) : field.toEntity(CustomerNotFound.class);
+                });
+    }
+
+    public Mono<List<CustomerDto>> allCustomers(){
+        return this.client.documentName("crud-operations")
+                .operationName("GetAll")
+                .retrieve("response")
+                .toEntityList(CustomerDto.class);
+    }
 }
